@@ -40,7 +40,10 @@ class TagViewSet(mixins.UpdateModelMixin, mixins.ListModelMixin, viewsets.Generi
         """Filter queryset to authenticated user only."""
         return self.queryset.filter(user=self.request.user).order_by('-name')
 
-class IngredientViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class IngredientViewSet(mixins.UpdateModelMixin,
+                        mixins.ListModelMixin,
+                        viewsets.GenericViewSet,
+                        mixins.DestroyModelMixin):
     """Manage ingredients in the database."""
     serializer_class = serializers.IngredientSerializer
     queryset = Ingredient.objects.all()
