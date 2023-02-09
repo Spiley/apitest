@@ -2,9 +2,7 @@
 Serializers for Recipe
 """
 from rest_framework import serializers
-from core.models import Recipe
-
-from core.models import Tag, Ingredient
+from core.models import Tag, Ingredient, Recipe
 
 
 
@@ -18,7 +16,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Serializer for recipes"""
-    Ingredients = IngredientSerializer(many=True, required=False)
+    ingredients = IngredientSerializer(many=True, required=False)
 
     class Meta:
         model = Recipe
@@ -37,11 +35,10 @@ class RecipeSerializer(serializers.ModelSerializer):
                 **ingredient)
             recipe.ingredients.add(ingredient_obj)
 
-    def create(self, validate_data):
-        tags = validated_data.pop('tags', [])
+    def create(self, validated_data):
+        """Create a recipe"""
         ingredients = validated_data.pop('ingredients', [])
         recipe = Recipe.objects.create(**validated_data)
-        self._get_or_create_tags(tags, recipe)
         self._get_or_create_ingredients(ingredients, recipe)
 
         return recipe
